@@ -10,14 +10,14 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to create the release
+      contents: write # Needed to create the release and upload assets
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # This step now writes the tag to the GITHUB_ENV file
       - name: Get tag name
-        id: get_tag
         run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Create Release
@@ -26,6 +26,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          # The tag_name and other properties now reference the environment variable
           tag_name: ${{ env.TAG }}
           release_name: Release ${{ env.TAG }}
           body: |
@@ -35,10 +36,14 @@ jobs:
 
       - name: Upload schema assets
         run: |
+          # Loop through all files in the 'schemas' directory ending with .schema.json
           for file in schemas/*.schema.json; do
+            # Check if the file exists to avoid errors
             if [ -f "$file" ]; then
+              # Upload the file to the release using the GitHub CLI
               gh release upload ${{ env.TAG }} "$file" --clobber
             fi
           done
         env:
+          # The GitHub CLI needs an authenticated token
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

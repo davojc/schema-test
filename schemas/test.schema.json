@@ -16,6 +16,12 @@
       "minLength": 3,
       "maxLength": 30
     },
+    "nickname": {
+      "description": "The nickname that the user wants to go by.",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 30
+    },
     "email": {
       "description": "The user's email address.",
       "type": "string",
