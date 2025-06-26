@@ -1,0 +1,44 @@
+# .github/workflows/release-schemas.yml
+name: Release Schemas
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger on tags that look like semantic versions, e.g., v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to create the release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get tag name
+        id: get_tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.TAG }}
+          release_name: Release ${{ env.TAG }}
+          body: |
+            Schema release for version ${{ env.TAG }}
+          draft: false
+          prerelease: false
+
+      - name: Upload schema assets
+        run: |
+          for file in schemas/*.schema.json; do
+            if [ -f "$file" ]; then
+              gh release upload ${{ env.TAG }} "$file" --clobber
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

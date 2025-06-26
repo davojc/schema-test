@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/user-profile.schema.json",
+  "title": "User Profile",
+  "description": "A schema for representing a user profile.",
+  "type": "object",
+  "properties": {
+    "userId": {
+      "description": "The unique identifier for a user.",
+      "type": "integer",
+      "readOnly": true
+    },
+    "username": {
+      "description": "The user's public username.",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 30
+    },
+    "email": {
+      "description": "The user's email address.",
+      "type": "string",
+      "format": "email"
+    },
+    "fullName": {
+      "description": "The user's full legal name.",
+      "type": "string"
+    },
+    "age": {
+      "description": "The age of the user.",
+      "type": "integer",
+      "minimum": 18
+    },
+    "isActive": {
+      "description": "Indicates if the user's account is active.",
+      "type": "boolean",
+      "default": true
+    },
+    "creationDate": {
+      "description": "The date the user profile was created.",
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "userId",
+    "username",
+    "email"
+  ]
+}
